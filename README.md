@@ -1,5 +1,4 @@
 # JavaScript-Patterns
-  ===================
 
-## Collection of different JS Patterns for reference
+## A collection of different JS Patterns for reference
 
