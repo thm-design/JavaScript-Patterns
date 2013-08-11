@@ -13,7 +13,7 @@ Collected from various sources on the web and my own work
 #### jQuery plugin
 
 
-Refrences
+Cred:
 http://jsdesignpatterns.com/
 https://github.com/shichuan
 http://paulirish.com
