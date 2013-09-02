@@ -415,7 +415,7 @@ alice.displayGreeting = function() {
           result = "unknown";
       }
 // ======================================================================================= 
-// object literal pattern.
+// Module pattern.
 // ======================================================================================= 
 var app;
  
@@ -534,3 +534,179 @@ Mod1.init();
 $('#elem').defaultPluginName({
   propertyName: 'a custom value'
 });
+
+
+/*--------------------------------------------------------------------------
+ * ModulePattern Bootstrap
+ *
+ * Created      : 21/01/2013
+ * Version      : 1.0
+ * UI Developer : Guilherme Pontes
+ * Notes        : Copy and reproduce as much as you want.
+---------------------------------------------------------------------------*/
+
+var sampleApplication;
+
+sampleApplication = window.sampleApplication || (function(d, w, $, u){
+  "use strict";
+
+  var app, config;
+
+
+  //private content
+  config = {
+    div : {
+      background: "red"
+    }
+  };
+
+  app = {
+    init : function() {
+      this.log("Initializing project");
+      this._cache();
+      this._bind();
+    },
+
+    load: function() {
+      this.log("Load event triggered");
+      this.loadMe();
+    },
+
+    _cache : function() {
+      this.log("Caching elements");
+      this.$anchorPrevent   = $( "a[href='#']" );
+      this.$myDiv           = $( ".myDiv" );
+    },
+
+    _bind : function() {
+      this.log("Binding functions");
+      this.$anchorPrevent.on( 'click', this.prevent );
+      this.$myDiv.on( 'click', this.changeBackground );
+    },
+
+    prevent : function(e) {
+      // here we need to avoid the "this" keyword, because it's being used by the element that have been clicked.
+      sampleApplication.log("Preventing default actions");
+      e.preventDefault();
+    },
+
+    changeBackground: function() {
+      // here we need to avoid the "this" keyword, because it's being used by the element that have been clicked.
+      sampleApplication.log("Changing background.");
+      var $this = $( this );
+
+      //access to the private content
+      $this.css('background', config.div.background);
+    },
+
+    loadMe: function() {
+      console.log( "Log me" );
+    },
+
+    log: function(functionName) {
+      console.log("Loading: " + functionName);
+    }
+  };
+
+  return app;
+
+})(document, window, window.jQuery);
+
+//caching the sample app
+window.sampleApplication = sampleApplication;
+
+$( document ).ready( sampleApplication.init )
+$( window ).load( sampleApplication.load );
+// usage
+var init =  {
+    ready : function() {
+        sampleApplication.init();
+    },
+
+    load : function() {
+        sampleApplication.load();
+    }
+};
+
+
+$( document ).ready( init.ready )
+$( window ).load( init.load );
+
+
+// more
+var PrimaryNameSpace = {
+
+        settings : {
+            foo: 'bar'
+        },
+
+        init: function () {
+            var s = this.settings;
+            this.nextMethod();
+        },
+
+        nextMethod: function () {
+          console.log(s.foo);
+        }
+
+    };
+
+$(function () {
+    PrimaryNameSpace.init();
+});
+
+// another
+
+var NewsWidget = (function () {
+    var s; // private alias to settings
+    
+    return {
+        settings: {
+            numArticles: 5,
+            articleList: $("#article-list"),
+            moreButton: $("#more-button")
+        },
+
+        init: function() {
+            s = this.settings;
+            this.bindUIActions();
+        },
+
+        bindUIActions: function() {
+            s.moreButton.on("click", function() {
+                NewsWidget.getMoreArticles(s.numArticles);
+            });
+        },
+
+        getMoreArticles: function(numToGet) {
+            // $.ajax or something
+            // using numToGet as param
+        }
+
+    };
+})();
+
+//====================
+
+(function ($, MyObject, undefined) {
+  MyObject.publicFunction = function() {
+      console.log("This is a public function!");
+  };
+  var privateFunction = function() {
+    console.log("This is a private function!");
+  };
+  
+  MyObject.sayStuff = function() {
+    this.publicFunction();
+    privateFunction();
+    privateNumber++;
+    console.log(privateNumber);
+  };
+  var privateNumber = 0;
+}(jQuery, window.MyObject = window.MyObject || {}));
+
+MyObject.sayStuff();
+MyObject.sayStuff();
+MyObject.publicFunction();
+MyObject.privateFunction(); // Returns error
+privateFunction(); // Returns error
