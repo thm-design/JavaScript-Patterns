@@ -710,3 +710,27 @@ MyObject.sayStuff();
 MyObject.publicFunction();
 MyObject.privateFunction(); // Returns error
 privateFunction(); // Returns error
+
+// ======================================================================================= 
+// Prototypal Inheritance
+// ======================================================================================= 
+var defaults = {
+  zero: 0,
+  one: 1
+};
+
+var myOptions = Object.create(defaults);
+var yourOptions = Object.create(defaults);
+
+// When I want to change *just* my options
+myOptions.zero = 1000;
+
+// When you wanna change yours
+yourOptions.one = 42;
+
+// When we wanna change the **defaults** even after we've got our options
+// even **AFTER** we've already created our instances
+defaults.two = 2;
+
+myOptions.two; // 2
+yourOptions.two; // 2
